@@ -1,0 +1,25 @@
+{
+  "name": "Extract-Tesouro-direto",
+  "version": "0.10.0",
+  "description": "Extração dos titulos publicos em formato JSON",
+  "author": "Jonathan Silva - jonathansilva.me",
+  "license": "MIT",
+  "keywords": [
+    "tesouro direto",
+    "bmfbovespa",
+    "bovespa",
+    "parser",
+    "html"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "./main.js",
+  "scripts": {
+    "start" : "node main.js"
+  },
+  "dependencies": {
+    "cheerio": "~0.20.0"
+  }
+}
