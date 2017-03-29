@@ -8,4 +8,4 @@ var server = http.createServer(function(request, response) {
     });
 });
 
-server.listen(8000);
+server.listen(process.env.PORT || 8000);
