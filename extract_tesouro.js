@@ -10,7 +10,7 @@ var extract = {
 
         var options = {
             host: 'www.bmfbovespa.com.br',
-            path: '/pt-br/mercados/outros-titulos/tesouro-direto/tesouro-direto.aspx?idioma=pt-br'
+            path: '/pt_br/produtos/tesouro-direto/titulos-disponiveis-para-compra.htm'
         }
 
         var request = http.request(options, function(res) {
@@ -33,8 +33,7 @@ var extract = {
 
     get_data: function(data) {
         $ = cheerio.load(data);
-
-        $("table[summary='Taxas'] tbody tr").each(function(i, elem) {
+        $('table tbody tr').each(function(i, elem) {
             if ($(this).children().length != 11) return false;
             split_data = $(this).text().split('\n');
             extract.normalize(split_data);
@@ -55,8 +54,10 @@ var extract = {
             nome: this.sanitize(info[1]),
             vencimento: this.sanitize(info[2]),
             indexador: this.sanitize(info[3]),
-            tx_Compra: this.sanitize(info[4]),
+            tx_compra: this.sanitize(info[4]),
             tx_venda: this.sanitize(info[5]),
+            preco_compra: this.sanitize(info[6]),
+            preco_venda: this.sanitize(info[7]),
             rent_30_dias: this.sanitize(info[8]),
             rent_mes_anterior: this.sanitize(info[9]),
             rent_anual_atual: this.sanitize(info[10]),
