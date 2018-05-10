@@ -44,9 +44,13 @@ var extract = {
             titulo: element[0],
             vencimento: element[1],
             taxaDeRendimento: element[2],
-            valorMinimo: element[3],
-            precoUnitario: element[4] 
+            valorMinimo: this.formatMoneyToFloat(element[3]),
+            precoUnitario: this.formatMoneyToFloat(element[4])
         }
+    },
+
+    formatMoneyToFloat: function (str) {
+        return str.replace(/[\D]+/g,'').replace(/([0-9]{2})$/g, ".$1");
     }
 }
 
