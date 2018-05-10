@@ -9,8 +9,8 @@ var extract = {
         this.callback = callback;
 
         var options = {
-            host: 'www.bmfbovespa.com.br',
-            path: '/pt_br/produtos/tesouro-direto/titulos-disponiveis-para-compra.htm'
+            host: 'www.tesouro.fazenda.gov.br',
+            path: 'tesouro-direto-precos-e-taxas-dos-titulos'
         }
 
         var request = http.request(options, function(res) {
