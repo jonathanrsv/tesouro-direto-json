@@ -33,9 +33,20 @@ var extract = {
 
     get_data: function(data) {
         $ = cheerio.load(data);
-        a = $('table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').map((a, b) => b).map((c, d) => $(d).children('td').map((e, f) => $(f).text()));
-        this.extraction_info = a.toArray().map(b => b.toArray());
-        this.callback(this.extraction_info);
+        let trs = $('table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
+        trs = trs.map(tr => $(tr).children('td').toArray() );
+        let values = trs.map(tr => tr.map(td => $(td).text()));
+        this.callback(values.map(titulo => extract.tesouroObjectify(titulo) ));
+    },
+
+    tesouroObjectify: function (element) {
+        return {
+            titulo: element[0],
+            vencimento: element[1],
+            taxaDeRendimento: element[2],
+            valorMinimo: element[3],
+            precoUnitario: element[4] 
+        }
     }
 }
 
