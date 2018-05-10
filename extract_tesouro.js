@@ -43,7 +43,7 @@ var extract = {
         return {
             titulo: element[0],
             vencimento: element[1],
-            taxaDeRendimento: element[2],
+            taxaDeRendimento: this.formatMoneyToFloat(element[2]),
             valorMinimo: this.formatMoneyToFloat(element[3]),
             precoUnitario: this.formatMoneyToFloat(element[4])
         }
