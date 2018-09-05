@@ -33,19 +33,29 @@ var extract = {
 
     get_data: function(data) {
         $ = cheerio.load(data);
-        let trs = $('table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
-        trs = trs.map(tr => $(tr).children('td').toArray() );
-        let values = trs.map(tr => tr.map(td => $(td).text()));
-        this.callback(values.map(titulo => extract.tesouroObjectify(titulo) ));
+        let invest = $('table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
+        let rescue = $('table.tabelaPrecoseTaxas:.sanfonado tbody tr.camposTesouroDireto').toArray();
+
+        this.callback({
+            "investir": parseTableLines(invest, true),
+            "regastar": parseTableLines(rescue, false)
+        });
     },
 
-    tesouroObjectify: function (element) {
+    parseTableLines: function(trs) {
+        trs = trs.map(tr => $(tr).children('td').toArray() );
+        let values = trs.map(tr => tr.map(td => $(td).text()));
+        return values.map(titulo => extract.tesouroObjectify(titulo) );
+    },
+    
+
+    tesouroObjectify: function (element, withMinValue) {
         return {
             titulo: element[0],
             vencimento: element[1],
             taxaDeRendimento: this.formatMoneyToFloat(element[2]),
-            valorMinimo: this.formatMoneyToFloat(element[3]),
-            precoUnitario: this.formatMoneyToFloat(element[4])
+            valorMinimo: this.formatMoneyToFloat(withMinValue ? element[3] : '0'),
+            precoUnitario: this.formatMoneyToFloat(withMinValue ? element[4] : element[3])
         }
     },
 
