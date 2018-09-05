@@ -42,10 +42,10 @@ var extract = {
         });
     },
 
-    parseTableLines: function(trs) {
+    parseTableLines: function(trs, withMinValue) {
         trs = trs.map(tr => $(tr).children('td').toArray() );
         let values = trs.map(tr => tr.map(td => $(td).text()));
-        return values.map(titulo => extract.tesouroObjectify(titulo) );
+        return values.map(titulo => extract.tesouroObjectify(titulo, withMinValue) );
     },
     
 
