@@ -38,7 +38,7 @@ var extract = {
 
         this.callback({
             "investir": extract.parseTableLines(invest, true),
-            "regastar": extract.parseTableLines(rescue, false)
+            "resgatar": extract.parseTableLines(rescue, false)
         });
     },
 
