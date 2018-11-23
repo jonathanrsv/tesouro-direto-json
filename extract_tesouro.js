@@ -33,8 +33,8 @@ var extract = {
 
     get_data: function(data) {
         $ = cheerio.load(data);
-        let invest = $('table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
-        let rescue = $('table.tabelaPrecoseTaxas.sanfonado tbody tr.camposTesouroDireto').toArray();
+        let invest = $('.portlet-body > table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
+        let rescue = $('.portlet-body > .sanfonado table.tabelaPrecoseTaxas tbody tr.camposTesouroDireto').toArray();
 
         this.callback({
             "investir": extract.parseTableLines(invest, true),
