@@ -37,8 +37,8 @@ var extract = {
         let rescue = $('.portlet-body > .sanfonado table.tabelaPrecoseTaxas tbody tr.camposTesouroDireto').toArray();
 
         this.callback({
-            "investir": extract.parseTableLines(invest, true),
-            "resgatar": extract.parseTableLines(rescue, false)
+            "investir": extract.parseTableLines(invest),
+            "resgatar": extract.parseTableLines(rescue)
         });
     },
 
@@ -49,13 +49,13 @@ var extract = {
     },
     
 
-    tesouroObjectify: function (element, withMinValue) {
+    tesouroObjectify: function (element) {
         return {
             titulo: element[0],
             vencimento: element[1],
             taxaDeRendimento: this.formatMoneyToFloat(element[2]),
-            valorMinimo: this.formatMoneyToFloat(withMinValue ? element[3] : '0'),
-            precoUnitario: this.formatMoneyToFloat(withMinValue ? element[4] : element[3])
+            valorMinimo: this.formatMoneyToFloat(element[3]),
+            precoUnitario: this.formatMoneyToFloat(element[4])
         }
     },
 
