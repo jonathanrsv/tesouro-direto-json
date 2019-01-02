@@ -35,10 +35,16 @@ var extract = {
         $ = cheerio.load(data);
         let invest = $('.portlet-body > table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
         let rescue = $('.portlet-body > .sanfonado table.tabelaPrecoseTaxas tbody tr.camposTesouroDireto').toArray();
-
+        let status = $('.mercadostatus').attr('class').split(' ').filter(function(e) {return 'mercadostatus' != e; });
+        let lastUpdate = $('.portlet-body > b').val();
+        let updated = new Date(lastUpdate.replace( /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/, "$2/$1/$3 $4:$5"));
+        
         this.callback({
             "investir": extract.parseTableLines(invest, true),
-            "resgatar": extract.parseTableLines(rescue, false)
+            "resgatar": extract.parseTableLines(rescue, false),
+            "status": status,
+            "lastUpdate": lastUpdate,
+            "lastTimeUpdate": updated.getTime()
         });
     },
 
