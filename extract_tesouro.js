@@ -9,8 +9,8 @@ var extract = {
         this.callback = callback;
 
         var options = {
-            host: 'www.bmfbovespa.com.br',
-            path: '/pt_br/produtos/tesouro-direto/titulos-disponiveis-para-compra.htm'
+            host: 'www.tesouro.fazenda.gov.br',
+            path: '/tesouro-direto-precos-e-taxas-dos-titulos'
         }
 
         var request = http.request(options, function(res) {
@@ -33,38 +33,40 @@ var extract = {
 
     get_data: function(data) {
         $ = cheerio.load(data);
-        $('table tbody tr').each(function(i, elem) {
-            if ($(this).children().length != 11) return false;
-            split_data = $(this).text().split('\n');
-            extract.normalize(split_data);
+        let invest = $('.portlet-body > table.tabelaPrecoseTaxas:not(".sanfonado") tbody tr.camposTesouroDireto').toArray();
+        let rescue = $('.portlet-body > .sanfonado table.tabelaPrecoseTaxas tbody tr.camposTesouroDireto').toArray();
+        let status = $('.mercadostatus').attr('class').split(' ').filter(function(e) {return 'mercadostatus' != e; });
+        let lastUpdate = $('.portlet-body > b').text();
+        let updated = new Date(lastUpdate.replace( /(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/, "$2/$1/$3 $4:$5"));
+        
+        this.callback({
+            "investir": extract.parseTableLines(invest, true),
+            "resgatar": extract.parseTableLines(rescue, false),
+            "status": status,
+            "lastUpdate": lastUpdate,
+            "lastTimeUpdate": updated.getTime()
         });
-        this.callback(this.extraction_info);
     },
 
-    sanitize: function(value) {
-        var value_new = value.replace(/^\s|( )+/g, ' ');
-        var str = value_new.replace(/^\s+/, "");
-        var str2 = str.replace("\r", "");
-        return str2;
+    parseTableLines: function(trs, withMinValue) {
+        trs = trs.map(tr => $(tr).children('td').toArray() );
+        let values = trs.map(tr => tr.map(td => $(td).text()));
+        return values.map(titulo => extract.tesouroObjectify(titulo, withMinValue) );
+    },
+    
+
+    tesouroObjectify: function (element, withMinValue) {
+        return {
+            titulo: element[0],
+            vencimento: element[1],
+            taxaDeRendimento: this.formatMoneyToFloat(element[2]),
+            valorMinimo: this.formatMoneyToFloat(withMinValue ? element[3] : '0'),
+            precoUnitario: this.formatMoneyToFloat(withMinValue ? element[4] : element[3])
+        }
     },
 
-    normalize: function(info) {
-        var clean_data = {
-            titulo: this.sanitize(info[1]) + ' ' + this.sanitize(info[2]).split('/')[2],
-            nome: this.sanitize(info[1]),
-            vencimento: this.sanitize(info[2]),
-            indexador: this.sanitize(info[3]),
-            tx_compra: this.sanitize(info[4]),
-            tx_venda: this.sanitize(info[5]),
-            preco_compra: this.sanitize(info[6]),
-            preco_venda: this.sanitize(info[7]),
-            rent_30_dias: this.sanitize(info[8]),
-            rent_mes_anterior: this.sanitize(info[9]),
-            rent_anual_atual: this.sanitize(info[10]),
-            rent_12_meses: this.sanitize(info[11])
-        };
-
-        this.extraction_info.push(clean_data);
+    formatMoneyToFloat: function (str) {
+        return str.replace(/[\D]+/g,'').replace(/([0-9]{2})$/g, ".$1");
     }
 }
 
